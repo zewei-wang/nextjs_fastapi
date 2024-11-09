@@ -12,6 +12,34 @@ jobs:
     name: Test and lint
     uses: zewei-wang/nextjs_fastapi/.github/workflows/development.yml@main
 
+  build:
+    name: Build application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "🔧 setup node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: "🔧 install npm@latest"
+        run: npm i -g npm@latest
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: "🚀 static app"
+        run: npm run build
+
   docker:
     name: Build container
     runs-on: ubuntu-latest
@@ -55,43 +83,6 @@ jobs:
           name: docker
           path: /tmp/docker.tar
 
-  build:
-    name: Build application
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v2
-
-      - name: "🔧 setup node"
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: "🔧 install npm@latest"
-        run: npm i -g npm@latest
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 9
-          run_install: false
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: "🚀 static app"
-        run: npm run build
-
-      - name: "list directory"
-        run: ls -al ${{ github.workspace }}
-
-      - name: "📂 production artifacts"
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: ${{ github.workspace }}/out
-
   release:
     environment:
       name: production
@@ -119,12 +110,6 @@ jobs:
         run: |
           docker load --input /tmp/docker.tar
           docker image ls -a
-
-      - name: "📂 download build artifacts"
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          path: build
 
       - name: "🚀 release"
         id: semantic-release
