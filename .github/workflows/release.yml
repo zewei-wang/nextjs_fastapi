@@ -50,7 +50,7 @@ jobs:
           cache-to: type=gha, scope=${{ github.workflow }}
 
       - name: "📂 docker artifacts"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: docker
           path: /tmp/docker.tar
@@ -64,9 +64,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: "🔧 setup node"
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
 
       - name: "🔧 install npm@latest"
         run: npm i -g npm@latest
