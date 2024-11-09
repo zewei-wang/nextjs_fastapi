@@ -71,8 +71,14 @@ jobs:
       - name: "🔧 install npm@latest"
         run: npm i -g npm@latest
 
-      - name: "📦 install dependencies"
-        uses: bahmutov/npm-install@v1
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: "📊 repository visualizer"
         id: diagram
@@ -84,7 +90,7 @@ jobs:
           root_path: "src/"
 
       - name: "📊 visualiser artifacts"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: diagram
           path: public/diagram.svg
@@ -93,7 +99,7 @@ jobs:
         run: npm run build
 
       - name: "📂 production artifacts"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: build
