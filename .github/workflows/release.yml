@@ -123,8 +123,8 @@ jobs:
 
   cleanup:
     name: Cleanup actions
-    needs:
-      - release
+#    needs:
+#      - release
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
